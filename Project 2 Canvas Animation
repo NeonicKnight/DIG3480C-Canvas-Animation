@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Michael Bush - Animated Canvas</title>
+    
+
+    <script>
+        var canvas;
+        var context;
+        var x;
+        var y;
+        var timer;
+        var timer2;
+        var timer3;
+        var words = [];
+        var colorFlag = -99;
+        var parts;
+        var timerRestart;
+        var circles = [];
+        var rects = [];
+
+        
+        
+        function init() {
+            canvas = document.getElementById('canvas');
+            context = canvas.getContext('2d');
+        }
+        
+        window.onkeydown = function(event) {
+            if (event.keyCode == 13) { // enter key pressed
+                document.getElementById('submit').focus();
+            }
+        }
+        
+        
+        function clickEvent() {
+            var addWord = document.getElementById("nameField").value;
+            words.push(addWord);
+            
+            colorWords(words[0]);
+            changeColors();
+            startCircle();
+            //startRect();
+            timer = setInterval(changeColors, 70);
+            timer2 = setInterval(circleCounter, 140);
+            //timer3 = setInterval(rectCounter, 70);
+            
+
+            /*makeParts();
+	           timer2 = setInterval(moveParts, 80);
+	           timerRestart = setInterval(makeParts, 2800);*/
+        }
+        
+        
+        function colorWords(word) {
+            context.font = "100px Arial";
+            var    gradient=context.createLinearGradient(0,0,canvas.width,0);
+
+            gradient.addColorStop(0, "rgba(255, 0, 0, 1)");
+            gradient.addColorStop(0.15, "rgba(255, 255, 0, 1)");
+            gradient.addColorStop(0.3, "rgba(0, 255, 0, 1)");
+            gradient.addColorStop(0.5, "rgba(0, 255, 255, 1)");
+            gradient.addColorStop(0.65, "rgba(0, 0, 255, 1)");
+            gradient.addColorStop(0.8, "rgba(255, 0, 255, 1)");
+            gradient.addColorStop(1, "rgba(255, 0, 0, 1)");
+
+            context.fillStyle=gradient;
+            context.textAlign = "center";
+            context.fillText(words[0], canvas.width/2, canvas.height/1.05);
+        }
+        
+        function changeColors () {
+            if (colorFlag == -99) {
+                var gradTwo = context.createLinearGradient(0,0,canvas.width,0);
+                gradTwo.addColorStop(0, "rgba(255, 0, 0, 1)");
+                gradTwo.addColorStop(0.15, "rgba(255, 0, 255, 1)");
+                gradTwo.addColorStop(0.3, "rgba(0, 0, 255, 1)");
+                gradTwo.addColorStop(0.5, "rgba(0, 255, 255, 1)");
+                gradTwo.addColorStop(0.65, "rgba(0, 255, 0, 1)");
+                gradTwo.addColorStop(0.8, "rgba(255, 255, 0, 1)");
+                gradTwo.addColorStop(1, "rgba(255, 0, 0, 1)");
+                
+                context.fillStyle=gradTwo;
+                context.textAlign = "center";
+                context.fillText(words[0], canvas.width/2, canvas.height/1.05);
+                
+                colorFlag = 99;
+            }
+            
+            else if (colorFlag == 99) {
+                var    gradient=context.createLinearGradient(0,0,canvas.width,0);
+                gradient.addColorStop(0, "rgba(255, 0, 0, 1)");
+                gradient.addColorStop(0.15, "rgba(255, 255, 0, 1)");
+                gradient.addColorStop(0.3, "rgba(0, 255, 0, 1)");
+                gradient.addColorStop(0.5, "rgba(0, 255, 255, 1)");
+                gradient.addColorStop(0.65, "rgba(0, 0, 255, 1)");
+                gradient.addColorStop(0.8, "rgba(255, 0, 255, 1)");
+                gradient.addColorStop(1, "rgba(255, 0, 0, 1)");
+                
+                context.fillStyle=gradient;
+                context.textAlign = "center";
+                context.fillText(words[0], canvas.width/2, canvas.height/1.05);
+                
+                colorFlag = -99;
+            }
+        }
+        
+        /*function makeParts() {
+	parts = [];
+	for(var i = 0; i < 30; i++)
+	{
+        var z = 1.3;
+        var k = 5;
+        parts.push(new Prtcl(z));
+        parts.push(new Prtcl(k));
+
+	}
+ }
+        
+        function Prtcl(g)
+ {
+	 this.x = canvas.width/g;
+	 this.y = canvas.height/3;
+	 this.vx = Math.random()*10-5;
+	 this.vy = Math.random()*10-5;
+	 var colors = ["red", "green", "blue", "orange", "purple", "yellow", "white"];
+	 this.color = colors[Math.floor(Math.random()*colors.length)];
+	 this.radius = 50;
+ }
+ function moveParts() {
+	 
+	 context.globalCompositeOperation = "source-over";
+	 context.fillStyle = "rgba(0, 0, 0, 0.3)";
+	 context.fillRect(0, 0, canvas.width, canvas.height);
+	 context.globalCompositeOperation = "lighter";
+	 for(var i = 0; i < parts.length; i++)
+	 {
+		 var p = parts[i];
+		 context.beginPath();
+		 context.arc(p.x, p.y, p.radius, 0, degreesToRadians(360), true);
+		 context.fillStyle = p.color;
+		 context.fill();
+		 p.x += p.vx;
+		 p.y += p.vy;
+		 if(p.x < -50) p.x = canvas.width+50;
+		 if(p.y < -50) p.y = canvas.height+50;
+		 if(p.x > canvas.width+50) p.x = -50;
+		 if(p.y > canvas.height+50) p.y = -50;
+		 p.radius -= 1.3;
+	 }
+ }*/
+        
+        function degreesToRadians(degrees) {
+	 return (degrees * Math.PI)/180;
+ }
+        /*function clearScreen(color) {
+	 context.clearRect(0, 0, canvas.width, canvas.height);
+	 context.fillStyle = color;
+	 context.fillRect(0, 0, canvas.width, canvas.height);
+ }*/
+        
+        function fillBackgroundColor() {
+            context.fillStyle = 'black';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        function startCircle() {
+            fillBackgroundColor();
+            //context.globalCompositeOperation = "lighter";
+        var colors = ["red", "green", "blue", "orange", "purple", "yellow"];
+			var color = colors[Math.floor(Math.random()*colors.length)];
+			circles.push(new Circle(canvas.width/2, canvas.height/3, color));
+		
+		for (var i=0; i<circles.length; i++) {
+			drawCircle(circles[i]);
+		}
+	  }
+        
+        /*function startRect() {
+            var colors = ["red", "green", "blue", "orange", "purple", "yellow"];
+			var color = colors[Math.floor(Math.random()*colors.length)];
+			rects.push(new Rect(canvas.width/2, canvas.height/3, color));
+		
+		for (var i=0; i<rects.length; i++) {
+			drawRects(rects[i]);
+        }*/
+        
+        function Circle(x, y, color) {
+		this.x = x;
+		this.y = y;
+		this.dx = Math.random()*4-2;
+		this.color = color;
+	  }
+            
+        /*function Rect(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.dy = Math.random()*4-2;
+            this.color = color;
+        }*/
+        
+        function drawCircle(circle) {
+		 context.beginPath();
+		 context.arc(circle.x, circle.y, 30, 0, degreesToRadians(360), true);
+		 context.fillStyle = circle.color;
+		 context.fill();
+		 if (circle.x + circle.dx > canvas.width || circle.x + circle.dx < 0)
+			circle.dx = -circle.dx;
+		 circle.x += circle.dx;
+	  }
+       
+            
+        /*function drawRect(rect) {
+            context.beginPath();
+            context.lineWidth="1";
+            context.strokeStyle="red";
+            context.rect(rect.x, rect.y, canvas.width/2, canvas.height/2); 
+            context.fillStyle = rect.color;
+            context.stroke();
+            if (rect.y + rect.dy > canvas.height || rect.y + rect.dy < 0)
+			rect.dy = -rect.dy;
+		 rect.y += rect.dy;
+        }*/
+            
+        function circleCounter() {
+            for (var i=0; i<5; i++) {
+			drawCircle(circles[i]);
+                startCircle();
+		      }
+        }
+        
+        /*function rectCounter() {
+            for (var i=0; i<5; i++){
+                drawRect(rects[i]);
+                startRect();
+            }
+        }*/
+        
+        window.onload = init;
+    </script>
+    
+    <style>
+        canvas {
+        border: 2px solid black;;
+        }
+        
+        body {background: rgb(37, 45, 56);
+        color: white;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    line-height: 1.1;
+    font-size: 25px; 
+    text-align:center;
+    margin: 0;
+    padding: 0;
+    padding-top: 70px;
+    }
+        
+        #submit{background-color: #3b5b81;
+    color: #ffffff;
+    font-size: 40px;
+    margin: 10px;
+    border: 7px solid #15798b;
+    }
+        #nameField{
+            font-size: 40px;
+        }
+        
+        #para{font-size: 40px;
+        }
+        
+        #form{font-size: 40px;
+        }
+    </style>
+    
+</head>
+<body>
+
+        <h1>Its a Celebration of You!</h1>
+
+    <canvas width="900" height="500" id="canvas"></canvas>
+    
+    <form id="form">
+Full Name: <input type="text" name="nameField" value="" id="nameField"><br>
+    </form>
+
+    <button id="submit" onclick="clickEvent()">Artify Your Name</button>
+    <p id="para">Please Enter your name in the field above to generate a living piece of art generated around your name! </br></br> 
+    If you continue to press "Artify Your Name" once the animation has started, it will speed up the process. Try it out!</p>
+</body>
+</html>
