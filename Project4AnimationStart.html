@@ -1,0 +1,265 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Michael Bush - Animated Canvas</title>
+    
+<script>
+	  var canvas;
+	  var context;
+	  var shapes = []
+	  var timer;
+	  var timerTwo;
+      //var pageTimer;
+    //text was added to shapes to animate it
+	  var possibleShapes = ['drop','triangle','square','circle','cloud', 'text'];
+    
+      var pageLife = 0;
+      
+    //run on window load
+function init() {
+        canvas = document.getElementById('canvas');
+        context = canvas.getContext("2d");
+ 
+        window.addEventListener('resize', resizeCanvas, false);
+        window.addEventListener('orientationchange', resizeCanvas, false);
+        resizeCanvas();
+		//first timer is the framerate, seconde shape generation
+    
+        //These are original working timers
+        //"timeCapsule" is an experiment to change the screen to a different animation
+		timer = setInterval(resizeCanvas, 20);
+		//timerTwo = setInterval(newShape, 150);
+    
+        if (pageLife < 450) {
+            timerTwo = setInterval(newShape, 150);
+        }
+    
+        //pageTimer = setInterval(timeCapsule, 450);
+        //timeCapsule();
+      }
+    
+    function timeCapsule() {
+        timer = setInterval(resizeCanvas, 20);
+        
+    }
+    
+    //this makes stats stick to the shapes that will be made
+    function Shape(x, y, color, z) {
+		this.x = x;
+		this.y = y;
+        this.z = z;
+		this.size = Math.random()*20+5;
+		this.dx = Math.random()*4-2;
+		this.dy = Math.random()*4-2;
+        this.dz = Math.random()*4-2;
+		this.color = color;
+		this.shape = possibleShapes[Math.floor(Math.random()*possibleShapes.length)];
+	  }
+    
+    //new shape generation
+    function newShape() {
+		/*var x = Math.random() * canvas.width;
+		var y = Math.random() * canvas.height;*/
+        var x = Math.random() * canvas.width;
+        //this y is where clouds float
+        var y = canvas.height/5 + ( Math.floor(Math.random()*75));
+        //this z is where text floats
+        var z = canvas.height/1.1 + ( Math.floor(Math.random()*75));
+        //colors was removed from here to incorporate random colors
+		/*var colors = ["red", "green", "blue", "orange", "purple", "yellow"];*/
+        //responsible for all colors but text
+        var color = colorGenerator();
+		/*var color = colors[Math.floor(Math.random()*colors.length)];*/
+		//if statement limits the number of shapes on screen
+        if (shapes.length < 100){
+        shapes.push(new Shape(x, y, color, z));
+        }
+		
+	  }
+    
+    //generates random rgb color
+    function colorGenerator() {
+    var r = 255*Math.random()|0,
+        g = 255*Math.random()|0,
+        b = 255*Math.random()|0;
+    return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+    
+    //generates random color between black and white 120
+    function grayScale(){
+        var r = 120*Math.random()|0;
+        return 'rgb(' + r + ',' + r + ',' + r + ')';
+    }
+	  
+    /*function drawCircle(circle) {
+		 context.beginPath();
+        //random numbers in arc create a pulse effect
+		 context.arc(circle.x, circle.y, circle.size + ( Math.floor(Math.random()*7)), 0, degreesToRadians(360), true);
+		 context.fillStyle = circle.color;
+		 context.fill();
+	  }*/
+    
+    //EXAM 3 TEST SECTION
+    function drawCircle(circle) {
+		 context.beginPath();
+        //random numbers in arc create a pulse effect
+		 
+        context.arc(circle.x, circle.y, 30, 0, Math.PI, true);
+        context.fillStyle = 'red';
+        context.fill();
+	  }
+	  
+    function drawSquare(square) {
+		context.beginPath();
+		context.fillStyle = square.color;
+		context.fillRect(square.x, square.y, square.size+5, square.size+60);
+      }	 
+	  
+    //random numbers create a pulsing effect
+    function drawTriangle(triangle) {
+		context.beginPath();
+		context.fillStyle = triangle.color;
+		context.moveTo(triangle.x+triangle.size+8+( Math.floor(Math.random()*9)),triangle.y);
+		context.lineTo(triangle.x,triangle.y);
+		context.lineTo(triangle.x,triangle.y+triangle.size+70+ ( Math.floor(Math.random()*9)));
+	    context.closePath();
+        context.fill();
+	  }
+
+	  function drawCloud(cloud) {
+		 context.beginPath();
+         
+		 //creates cool effect
+          //all clouds share this one point despite location
+          //context.moveTo(canvas.width/2, canvas.height/2);
+		
+          context.moveTo(cloud.x, cloud.y);
+          context.bezierCurveTo(cloud.x-40, cloud.y+20, cloud.x-40, cloud.y+70, cloud.x+60, cloud.y+70);
+		  context.bezierCurveTo(cloud.x+80, cloud.y+100, cloud.x+170, cloud.y+100, cloud.x+170, cloud.y+70);
+		  context.bezierCurveTo(cloud.x+250, cloud.y+70, cloud.x+250, cloud.y+40, cloud.x+210, cloud.y+20);
+		  context.bezierCurveTo(cloud.x+260, cloud.y-40, cloud.x+200, cloud.y+50, cloud.x+170, cloud.y-30);
+		  context.bezierCurveTo(cloud.x+150, cloud.y-75, cloud.x+80, cloud.y-60, cloud.x+80, cloud.y-30);
+		  context.bezierCurveTo(cloud.x+30, cloud.y-75, cloud.x-20, cloud.y-60, cloud.x, cloud.y);
+          
+          //This is an alt cloud, but lower then Id like
+          /*context.moveTo(cloud.x+170, cloud.y+80);      
+          context.bezierCurveTo(cloud.x+130, cloud.y+100, cloud.x+130, cloud.y+150, cloud.x+230, cloud.y+150);
+          context.bezierCurveTo(cloud.x+250, cloud.y+180, cloud.x+320, cloud.y+180, cloud.x+340, cloud.y+150);
+          context.bezierCurveTo(cloud.x+420, cloud.y+150, cloud.x+420, cloud.y+120, cloud.x+390, cloud.y+100);
+          context.bezierCurveTo(cloud.x+430, cloud.y+40, cloud.x+370, cloud.y+30, cloud.x+340, cloud.y+50);
+          context.bezierCurveTo(cloud.x+320, cloud.y+5, cloud.x+250, cloud.y+20, cloud.x+250, cloud.y+50);
+          context.bezierCurveTo(cloud.x+200, cloud.y+5, cloud.x+150, cloud.y+20, cloud.x+170, cloud.y+80);*/
+          
+		  // complete custom shape
+		  context.closePath();
+		  context.lineWidth = 5;
+          //fill color has transparency
+          context.fillStyle = 'rgba(54, 172, 181, 0.74)';
+          context.fill();
+		  context.strokeStyle = cloud.color;
+		  context.stroke();
+	  }
+
+    //made skinnier then originals
+	  function drawDrop(drop) {
+		    context.beginPath();
+			context.lineJoin = 'miter';
+			context.moveTo(drop.x, drop.y);
+			context.arc(drop.x, drop.y+68, 20, 5.75, 3.66, false);
+			context.quadraticCurveTo(drop.x-3.5, drop.y+15, drop.x, drop.y);
+			context.closePath();
+			context.lineWidth = 2;
+			context.fillStyle = drop.color;
+			context.fill();
+	  }
+    
+    //text functions similar to clouds but on bottom of screen with z stat
+    function drawText(text) {
+		context.fillStyle = grayScale();
+		context.font = 'bold 2em sans-serif';
+		context.textAlign = 'center';
+		context.fillText('Floridian Weather', text.x, text.z);
+	}
+      
+    function resizeCanvas() {
+        //add to the page's life
+        pageLife++;
+        //check to see if its life is up
+        if (pageLife < 450) {
+            //if page is alive run normally
+        canvas.width = window.innerWidth-20;
+        canvas.height = window.innerHeight-20;
+		fillBackgroundColor();
+		for (var i=0; i<shapes.length; i++) {
+			if (shapes[i].shape == 'square') {
+				drawSquare(shapes[i]);
+			} else if (shapes[i].shape == 'circle') {
+				drawCircle(shapes[i]);
+			} else if (shapes[i].shape == 'triangle') {
+				drawTriangle(shapes[i]);
+			} else if (shapes[i].shape == 'drop') {
+				drawDrop(shapes[i]);
+			} else if (shapes[i].shape == 'cloud') {
+				drawCloud(shapes[i]);
+			} else if (shapes[i].shape == 'text') {
+				drawText(shapes[i]);
+			}
+			if (shapes[i].x + shapes[i].dx > canvas.width || shapes[i].x + shapes[i].dx < 0)
+				shapes[i].dx = -shapes[i].dx;
+			if (shapes[i].y + shapes[i].dy > canvas.height || shapes[i].y + shapes[i].dy < canvas.height/6)
+				shapes[i].dy = -shapes[i].dy;
+				
+            //This list makes everything move in only one direction, vertical or horizontal
+            if (shapes[i].shape == 'cloud') {
+                shapes[i].x += shapes[i].dx;
+            }
+            if (shapes[i].shape == 'drop') {
+                shapes[i].y += shapes[i].dy;
+            }
+            if (shapes[i].shape == 'square') {
+                shapes[i].y += shapes[i].dy;
+            }
+            if (shapes[i].shape == 'circle') {
+                shapes[i].y += shapes[i].dy;
+            }
+            if (shapes[i].shape == 'triangle') {
+                shapes[i].y += shapes[i].dy;
+            }
+            if (shapes[i].shape == 'text') {
+                shapes[i].x += shapes[i].dx;
+            }
+            /*shapes[i].x += shapes[i].dx;
+            shapes[i].y += shapes[i].dy;*/
+		}
+        //this is where text is drawn!
+		//drawText();		 
+        }
+        //the opposite of pageLife
+        else {
+        fillBackgroundColor();
+        }
+      }
+	  
+    //changes background to a stormy blue to fit theme
+    function fillBackgroundColor() {
+		 //var colors = ["white", "yellow", "blue", "red"];
+		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
+		 context.fillStyle = "#2a6393";
+		 context.fillRect(0, 0, canvas.width, canvas.height);
+	}
+	function degreesToRadians(degrees) {
+		//converts from degrees to radians and returns
+		return (degrees * Math.PI)/180;
+	}
+	
+    window.onload = init;
+</script>
+    
+</head>
+<body>
+
+    <canvas width="900" height="500" id="canvas"></canvas>
+   
+</body>
+</html>
