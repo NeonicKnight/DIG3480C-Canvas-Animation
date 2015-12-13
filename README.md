@@ -1,2 +1,5 @@
 # DIG3480C-Canvas-Animation
-This will be Project 3's Canvas Animation for DIG3480C
+This was a repository for DIG 3480C's Canvas Animation for Project 3-
+But now acts as a repository for DIG 3480C's Canvas Animation for Project 4.
+
+So. Lots of stuff going on here.
