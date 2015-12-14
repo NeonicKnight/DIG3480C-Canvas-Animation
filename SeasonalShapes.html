@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <title>Michael Bush - Animated Canvas</title>
-    //test update
+    
 <script>
 	  var canvas;
 	  var context;
@@ -21,9 +21,9 @@ function init() {
         canvas = document.getElementById('canvas');
         context = canvas.getContext("2d");
  
-        window.addEventListener('resize', resizeCanvasSPRING, false);
-        window.addEventListener('orientationchange', resizeCanvasSPRING, false);
-        resizeCanvasSPRING();
+        window.addEventListener('resize', resizeCanvas, false);
+        window.addEventListener('orientationchange', resizeCanvas, false);
+        resizeCanvas();
 		//first timer is the framerate, seconde shape generation
     
         //These are original working timers
@@ -31,31 +31,17 @@ function init() {
         //MAYBE TIMECAPSULE CAN RESET PAGELIFE TO 0 TO RESART THE WHOLE THING
     
         canvas.onclick = function(event) {
-			
             pageLife += 250;
             console.log(pageLife);
+            shapes = [];
+            
             if (pageLife > 1249) {
                 pageLife = 0;
             }
 		  };
     
-		timer = setInterval(resizeCanvasWINTER, 20);
-		timerTwo = setInterval(newShape, 150);
-    
-        /*if (pageLife < 250) {
-            timer = setInterval(resizeCanvasSPRING, 20);
-        }
-        else if (pageLife < 500) {
-            timer = setInterval(resizeCanvasSUMMER, 20);
-        }
-        else if (pageLife < 750) {
-            timer = setInterval(resizeCanvasFALL, 20);
-        }
-        else if (pageLife < 1000) {
-            timer = setInterval(resizeCanvasWINTER, 20);
-        }*/
-     
-        
+		timer = setInterval(resizeCanvas, 20);
+		timerTwo = setInterval(newShape, 250);  
       }
     
     //this makes stats stick to the shapes that will be made
@@ -125,7 +111,6 @@ function init() {
 		 context.fill();
 	  }*/
     
-    //EXAM 3 TEST SECTION
     function drawCircle(circle) {
 		 context.beginPath();
         //random numbers in arc create a pulse effect
@@ -205,68 +190,16 @@ function init() {
 		context.fillText('Floridian Weather', text.x, text.z);
 	}
     
-    function resizeCanvasSPRING() {
+    function resizeCanvas() {
         //add to the page's life
         //pageLife++;
-        //check to see if its life is up
-        if (pageLife > 500) {
-            console.log(pageLife);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            timer = setInterval(resizeCanvasSUMMER, 20);
-        }
-            //if page is alive run normally
-        canvas.width = window.innerWidth-20;
-        canvas.height = window.innerHeight-20;
-            //ifelse to change the background color
-            
-		fillBackgroundColor();
-            
-		for (var i=0; i<shapes.length; i++) {
-			if (shapes[i].shape == 'triangle') {
-				drawTriangle(shapes[i]);
-			} else if (shapes[i].shape == 'cloud') {
-				drawCloud(shapes[i]);
-			}
-            //reverese direction
-			if (shapes[i].x + shapes[i].dx > canvas.width || shapes[i].x + shapes[i].dx < 0)
-				shapes[i].dx = -shapes[i].dx;
-			if (shapes[i].y + shapes[i].dy > canvas.height || shapes[i].y + shapes[i].dy < canvas.height/6)
-				shapes[i].dy = -shapes[i].dy;
-				
-            //This list makes everything move in only one direction, vertical or horizontal
-            if (shapes[i].shape == 'cloud') {
-                shapes[i].x += shapes[i].dx;
+        if (pageLife > 1249) {
+            pageLife = 0;
             }
-            
-            if (shapes[i].shape == 'triangle') {
-                shapes[i].y += shapes[i].dy;
-            }
-            
-            /*shapes[i].x += shapes[i].dx;
-            shapes[i].y += shapes[i].dy;*/
-		}
-        //this is where text is drawn!
-		//drawText();		 
         
-        //the opposite of pageLife
-        /*else {
-        fillBackgroundColorSUMMER();
-        }*/
-      }
-      
-    function resizeCanvasSUMMER() {
-        //add to the page's life
-        //pageLife++;
-        //check to see if its life is up
-        if (pageLife > 750) {
-            console.log(pageLife);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            timer = setInterval(resizeCanvasFALL, 20);
-        }
             //if page is alive run normally
         canvas.width = window.innerWidth-20;
         canvas.height = window.innerHeight-20;
-            //ifelse to change the background color
             
 		fillBackgroundColor();
             
@@ -312,147 +245,7 @@ function init() {
             shapes[i].y += shapes[i].dy;*/
 		}
         //this is where text is drawn!
-		//drawText();		 
-        
-        //the opposite of pageLife
-        /*else {
-        fillBackgroundColorSUMMER();
-        }*/
-      }
-    
-    function resizeCanvasFALL() {
-        //add to the page's life
-        //pageLife++;
-        //check to see if its life is up
-        if (pageLife > 1000) {
-            console.log(pageLife);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            timer = setInterval(resizeCanvasWINTER, 20);
-        }
-            //if page is alive run normally
-        canvas.width = window.innerWidth-20;
-        canvas.height = window.innerHeight-20;
-            //ifelse to change the background color
-            
-		fillBackgroundColor();
-            
-		for (var i=0; i<shapes.length; i++) {
-			if (shapes[i].shape == 'square') {
-				drawSquare(shapes[i]);
-			} else if (shapes[i].shape == 'circle') {
-				drawCircle(shapes[i]);
-			} else if (shapes[i].shape == 'triangle') {
-				drawTriangle(shapes[i]);
-			} else if (shapes[i].shape == 'drop') {
-				drawDrop(shapes[i]);
-			} else if (shapes[i].shape == 'cloud') {
-				drawCloud(shapes[i]);
-			} else if (shapes[i].shape == 'text') {
-				drawText(shapes[i]);
-			}
-			if (shapes[i].x + shapes[i].dx > canvas.width || shapes[i].x + shapes[i].dx < 0)
-				shapes[i].dx = -shapes[i].dx;
-			if (shapes[i].y + shapes[i].dy > canvas.height || shapes[i].y + shapes[i].dy < canvas.height/6)
-				shapes[i].dy = -shapes[i].dy;
-				
-            //This list makes everything move in only one direction, vertical or horizontal
-            if (shapes[i].shape == 'cloud') {
-                shapes[i].x += shapes[i].dx;
-            }
-            if (shapes[i].shape == 'drop') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'square') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'circle') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'triangle') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'text') {
-                shapes[i].x += shapes[i].dx;
-            }
-            /*shapes[i].x += shapes[i].dx;
-            shapes[i].y += shapes[i].dy;*/
-		}
-        //this is where text is drawn!
-		//drawText();		 
-        
-        //the opposite of pageLife
-        /*else {
-        fillBackgroundColorSUMMER();
-        }*/
-      }
-    
-    function resizeCanvasWINTER() {
-        //add to the page's life
-        //pageLife++;
-       /* if (pageLife > 1249) {
-                pageLife = 0;
-            }
-        //check to see if its life is up
-        if (pageLife < 250) {
-            console.log(pageLife);
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            timer = setInterval(resizeCanvasSPRING, 20);
-        }*/
-            //if page is alive run normally
-        canvas.width = window.innerWidth-20;
-        canvas.height = window.innerHeight-20;
-            //ifelse to change the background color
-            
-		fillBackgroundColor();
-            
-		for (var i=0; i<shapes.length; i++) {
-			if (shapes[i].shape == 'square') {
-				drawSquare(shapes[i]);
-			} else if (shapes[i].shape == 'circle') {
-				drawCircle(shapes[i]);
-			} else if (shapes[i].shape == 'triangle') {
-				drawTriangle(shapes[i]);
-			} else if (shapes[i].shape == 'drop') {
-				drawDrop(shapes[i]);
-			} else if (shapes[i].shape == 'cloud') {
-				drawCloud(shapes[i]);
-			} else if (shapes[i].shape == 'text') {
-				drawText(shapes[i]);
-			}
-			if (shapes[i].x + shapes[i].dx > canvas.width || shapes[i].x + shapes[i].dx < 0)
-				shapes[i].dx = -shapes[i].dx;
-			if (shapes[i].y + shapes[i].dy > canvas.height || shapes[i].y + shapes[i].dy < canvas.height/6)
-				shapes[i].dy = -shapes[i].dy;
-				
-            //This list makes everything move in only one direction, vertical or horizontal
-            if (shapes[i].shape == 'cloud') {
-                shapes[i].x += shapes[i].dx;
-            }
-            if (shapes[i].shape == 'drop') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'square') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'circle') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'triangle') {
-                shapes[i].y += shapes[i].dy;
-            }
-            if (shapes[i].shape == 'text') {
-                shapes[i].x += shapes[i].dx;
-            }
-            /*shapes[i].x += shapes[i].dx;
-            shapes[i].y += shapes[i].dy;*/
-		}
-        //this is where text is drawn!
-		//drawText();		 
-        
-        //the opposite of pageLife
-        /*else {
-        fillBackgroundColorSUMMER();
-        }*/
+		//drawText();
       }
     
       
@@ -461,21 +254,26 @@ function init() {
 		 //var colors = ["white", "yellow", "blue", "red"];
 		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
         
-        //MIGHT USE IFELSE HERE JUST TO CHANGE COLOR ALONE
+        //pageLife determines that bg color to set a seasonal tone
         if (pageLife < 250) {
+            //spring
 		 context.fillStyle = "#2a6393";
         }
         else if (pageLife < 500) {
+            //summer
             context.fillStyle = "#ba7a00"
         }
         else if (pageLife < 750) {
+            //fall
             context.fillStyle = "#68147c";
         }
         else if (pageLife < 1000) {
+            //winter
             context.fillStyle = "#968d98"
         }
         else {
             //needed to replace black screen/prevent any unforseen bugs
+            //spring colors
             context.fillStyle = "#2a6393";
         }
 		 context.fillRect(0, 0, canvas.width, canvas.height);
