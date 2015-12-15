@@ -15,6 +15,11 @@
 	  var possibleShapes = ['drop','triangle','square','circle','cloud', 'text'];
     
       var pageLife = 0;
+      var currentSeason;
+      var chanceSpringShapes = ['drop','triangle','cloud'];
+      var chanceSummerShapes = ['cloud','square'];
+      var chanceFallShapes = ['triangle'];
+      var chanceWinterShapes = ['circle','cloud'];
       
     //run on window load
 function init() {
@@ -24,11 +29,9 @@ function init() {
         window.addEventListener('resize', resizeCanvas, false);
         window.addEventListener('orientationchange', resizeCanvas, false);
         resizeCanvas();
-		//first timer is the framerate, seconde shape generation
     
-        //These are original working timers
-        //"timeCapsule" is an experiment to change the screen to a different animation
-        //MAYBE TIMECAPSULE CAN RESET PAGELIFE TO 0 TO RESART THE WHOLE THING
+        window.addEventListener( "keydown", doKeyDown, true);
+		
     
         canvas.onclick = function(event) {
             pageLife += 250;
@@ -39,9 +42,18 @@ function init() {
                 pageLife = 0;
             }
 		  };
-    
+        //first timer is the framerate, seconde shape generation
+        //These are original working timers
 		timer = setInterval(resizeCanvas, 20);
-		timerTwo = setInterval(newShape, 250);  
+		timerTwo = setInterval(newShape, 200);  
+      }
+    
+    function doKeyDown(e) {
+        if ( e.keyCode == 32 ) {
+            console.log(pageLife);
+            shapes = [];
+            pageLife = 1001;
+        }
       }
     
     //this makes stats stick to the shapes that will be made
@@ -67,22 +79,25 @@ function init() {
         var y = canvas.height/5 + ( Math.floor(Math.random()*75));
         //this z is where text floats
         var z = canvas.height/1.1 + ( Math.floor(Math.random()*75));
-        //colors was removed from here to incorporate random colors
-		/*var colors = ["red", "green", "blue", "orange", "purple", "yellow"];*/
-        //responsible for all colors but text
-        var color = colorGenerator();
+        
         if (pageLife < 250) {
-            var seasonShapes = "circle";
+            //var seasonShapes = "circle";
+            var seasonShapes = chanceSpringShapes[Math.floor(Math.random()*chanceSpringShapes.length)];
         }
         else if (pageLife < 500) {
-            var seasonShapes = "drop";
+            //var seasonShapes = "drop";
+            var seasonShapes = chanceSummerShapes[Math.floor(Math.random()*chanceSpringShapes.length)];
         }
         else if (pageLife < 750) {
-            var seasonShapes = "cloud";
+            //var seasonShapes = "cloud";
+            var seasonShapes = chanceFallShapes[Math.floor(Math.random()*chanceSpringShapes.length)];
         }
         else if (pageLife < 1000) {
-            var seasonShapes = "triangle";
+            //var seasonShapes = "triangle";
+            var seasonShapes = chanceWinterShapes[Math.floor(Math.random()*chanceSpringShapes.length)];
         }
+        //responsible for all colors but text
+        var color = colorGenerator(seasonShapes);
 		//if statement limits the number of shapes on screen
         if (shapes.length < 100){ 
         shapes.push(new Shape(x, y, color, z, seasonShapes));
@@ -90,17 +105,116 @@ function init() {
 	  }
     
     //generates random rgb color
-    function colorGenerator() {
-    var r = 255*Math.random()|0,
+    function colorGenerator(seasonShapes) {
+        var r,g,b,a;
+    /*var r = 255*Math.random()|0,
         g = 255*Math.random()|0,
         b = 255*Math.random()|0;
-    return 'rgb(' + r + ',' + g + ',' + b + ')';
+        //a = 1*Math.random()|0;
+    return 'rgb(' + r + ',' + g + ',' + b + ')';*/
+        //SPRING
+        if (pageLife < 250) {
+            if (seasonShapes == 'triangle'){
+                //lightening bolts
+                r = 255 - 30*Math.random()|0,
+                g = 186 - 30*Math.random()|0,
+                b = 0 + 30*Math.random()|0,
+                a = 1;
+            }
+            if (seasonShapes == 'drop'){
+                //rain drops
+                r = 0 + 30*Math.random()|0,
+                g = 206 - 30*Math.random()|0,
+                b = 255 - 30*Math.random()|0,
+                a = 1;
+            }
+            if (seasonShapes == 'cloud') {
+                //spring storm clouds
+                r = 125 - 30*Math.random()|0,
+                g = 125 - 30*Math.random()|0,
+                b = 125 - 30*Math.random()|0
+                a = 1;
+            }
+        }
+        //SUMMER
+        else if (pageLife < 500) {
+            if (seasonShapes == 'square') {
+            //suns rays
+            r = 255 - 30*Math.random()|0,
+            g = 186 - 30*Math.random()|0,
+            b = 0 + 30*Math.random()|0,
+            a = 1;
+            }
+            if (seasonShapes == 'cloud') {
+                //summer clouds
+                r = 255 - 30*Math.random()|0,
+                g = 255 - 30*Math.random()|0,
+                b = 255 - 30*Math.random()|0,
+                a = .8;
+            }
+        }
+        //FALL
+        else if (pageLife < 750) {
+            //"rgb(173, 82, 3)"
+            if (seasonShapes == 'triangle'){
+                //falling leaves
+                r = 255 - 50*Math.random()|0,
+                g = 186 - 80*Math.random()|0,
+                b = 0 + 30*Math.random()|0
+                a = 1;
+            }
+        }
+        //WINTER
+        else if (pageLife < 1000) {
+            if (seasonShapes == 'circle') {
+            //winter snow
+            r = 255 - 30*Math.random()|0,
+            g = 255 - 30*Math.random()|0,
+            b = 255 - 30*Math.random()|0,
+            a = .75;
+            }
+            if (seasonShapes == 'cloud') {
+                //winter clouds
+                r = 255 - 30*Math.random()|0,
+                g = 255 - 30*Math.random()|0,
+                b = 255 - 30*Math.random()|0,
+                a = 1;
+            }
+        }
+        else {
+            //yellow
+            r = 255 - 30*Math.random()|0,
+            g = 186 - 30*Math.random()|0,
+            b = 0 + 30*Math.random()|0,
+            a = 1;
+            
+        }
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }
     
-    //generates random color between black and white 120
-    function grayScale(){
-        var r = 120*Math.random()|0;
-        return 'rgb(' + r + ',' + r + ',' + r + ')';
+    //determines what color the text is displayed as
+    function textColor(){
+       if (pageLife < 250) {
+           currentSeason = "Spring and its stormy weather";
+            return "white";
+        }
+        else if (pageLife < 500) {
+            currentSeason = "Summer and its sunny rays";
+            //return "rgb(255, 186, 0)";
+            return "#0f6520";
+        }
+        else if (pageLife < 750) {
+            currentSeason = "Fall and its many leaves";
+            return "#00a069";
+        }
+        else if (pageLife < 1000) {
+            currentSeason = "Winter and its chilly snow";
+            return "#dd0000";
+        }
+        else {
+            currentSeason = "Seasons in Canvas";
+            return "white";
+        }
     }
 	  
     /*function drawCircle(circle) {
@@ -115,15 +229,15 @@ function init() {
 		 context.beginPath();
         //random numbers in arc create a pulse effect
 		 
-        context.arc(circle.x, circle.y, 30, 0, Math.PI, true);
-        context.fillStyle = 'red';
+        context.arc(circle.x, circle.y, circle.size + ( Math.floor(Math.random()*7)), 0, degreesToRadians(360), true);
+        context.fillStyle = circle.color;
         context.fill();
 	  }
 	  
     function drawSquare(square) {
 		context.beginPath();
 		context.fillStyle = square.color;
-		context.fillRect(square.x, square.y, square.size+5, square.size+60);
+		context.fillRect(square.x, square.y, square.size-3, square.size+60);
       }	 
 	  
     //random numbers create a pulsing effect
@@ -143,28 +257,29 @@ function init() {
           //all clouds share this one point despite location
           //context.moveTo(canvas.width/2, canvas.height/2);
 		
-          context.moveTo(cloud.x, cloud.y);
+          /*context.moveTo(cloud.x, cloud.y);
           context.bezierCurveTo(cloud.x-40, cloud.y+20, cloud.x-40, cloud.y+70, cloud.x+60, cloud.y+70);
 		  context.bezierCurveTo(cloud.x+80, cloud.y+100, cloud.x+170, cloud.y+100, cloud.x+170, cloud.y+70);
 		  context.bezierCurveTo(cloud.x+250, cloud.y+70, cloud.x+250, cloud.y+40, cloud.x+210, cloud.y+20);
 		  context.bezierCurveTo(cloud.x+260, cloud.y-40, cloud.x+200, cloud.y+50, cloud.x+170, cloud.y-30);
 		  context.bezierCurveTo(cloud.x+150, cloud.y-75, cloud.x+80, cloud.y-60, cloud.x+80, cloud.y-30);
-		  context.bezierCurveTo(cloud.x+30, cloud.y-75, cloud.x-20, cloud.y-60, cloud.x, cloud.y);
+		  context.bezierCurveTo(cloud.x+30, cloud.y-75, cloud.x-20, cloud.y-60, cloud.x, cloud.y);*/
           
           //This is an alt cloud, but lower then Id like
-          /*context.moveTo(cloud.x+170, cloud.y+80);      
+          context.moveTo(cloud.x+170, cloud.y+80);      
           context.bezierCurveTo(cloud.x+130, cloud.y+100, cloud.x+130, cloud.y+150, cloud.x+230, cloud.y+150);
           context.bezierCurveTo(cloud.x+250, cloud.y+180, cloud.x+320, cloud.y+180, cloud.x+340, cloud.y+150);
           context.bezierCurveTo(cloud.x+420, cloud.y+150, cloud.x+420, cloud.y+120, cloud.x+390, cloud.y+100);
           context.bezierCurveTo(cloud.x+430, cloud.y+40, cloud.x+370, cloud.y+30, cloud.x+340, cloud.y+50);
           context.bezierCurveTo(cloud.x+320, cloud.y+5, cloud.x+250, cloud.y+20, cloud.x+250, cloud.y+50);
-          context.bezierCurveTo(cloud.x+200, cloud.y+5, cloud.x+150, cloud.y+20, cloud.x+170, cloud.y+80);*/
+          context.bezierCurveTo(cloud.x+200, cloud.y+5, cloud.x+150, cloud.y+20, cloud.x+170, cloud.y+80);
           
 		  // complete custom shape
 		  context.closePath();
 		  context.lineWidth = 5;
-          //fill color has transparency
-          context.fillStyle = 'rgba(54, 172, 181, 0.74)';
+          //fill color is blue and has transparency
+          //context.fillStyle = 'rgba(54, 172, 181, 0.74)';
+          context.fillStyle = cloud.color;
           context.fill();
 		  context.strokeStyle = cloud.color;
 		  context.stroke();
@@ -182,12 +297,19 @@ function init() {
 			context.fill();
 	  }
     
-    //text functions similar to clouds but on bottom of screen with z stat
-    function drawText(text) {
-		context.fillStyle = grayScale();
+    //text insructions to remain on screen for user
+    function drawText() {
+		context.fillStyle = textColor();
 		context.font = 'bold 2em sans-serif';
 		context.textAlign = 'center';
-		context.fillText('Floridian Weather', text.x, text.z);
+		context.fillText('Click the screen to change the season! Press the spacebar to restart!', canvas.width/2, canvas.height/1.1);
+	}
+    
+    function drawSeasonText() {
+		context.fillStyle = textColor();
+		context.font = 'bold 3em sans-serif';
+		context.textAlign = 'center';
+		context.fillText(currentSeason, canvas.width/2, canvas.height/1.2);
 	}
     
     function resizeCanvas() {
@@ -245,7 +367,8 @@ function init() {
             shapes[i].y += shapes[i].dy;*/
 		}
         //this is where text is drawn!
-		//drawText();
+		drawText();
+        drawSeasonText();
       }
     
       
@@ -257,11 +380,11 @@ function init() {
         //pageLife determines that bg color to set a seasonal tone
         if (pageLife < 250) {
             //spring
-		 context.fillStyle = "#2a6393";
+		 context.fillStyle = "#5d7b91";
         }
         else if (pageLife < 500) {
             //summer
-            context.fillStyle = "#ba7a00"
+            context.fillStyle = "#2970b7";
         }
         else if (pageLife < 750) {
             //fall
@@ -269,12 +392,12 @@ function init() {
         }
         else if (pageLife < 1000) {
             //winter
-            context.fillStyle = "#968d98"
+            //context.fillStyle = "#a8b1b9";
+            context.fillStyle = "#111740";
         }
         else {
-            //needed to replace black screen/prevent any unforseen bugs
-            //spring colors
-            context.fillStyle = "#2a6393";
+            //START PAGE
+            context.fillStyle = "#008c91";
         }
 		 context.fillRect(0, 0, canvas.width, canvas.height);
 	}
