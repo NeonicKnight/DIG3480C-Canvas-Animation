@@ -14,11 +14,14 @@
     //text was added to shapes to animate it
 	  var possibleShapes = ['drop','triangle','square','circle','cloud', 'text'];
     
+    //pageLife counter changes seasons
       var pageLife = 0;
+    //holds the title for the season
       var currentSeason;
+    //the shapes of each season
       var chanceSpringShapes = ['drop','triangle','cloud'];
       var chanceSummerShapes = ['cloud','square'];
-      var chanceFallShapes = ['triangle'];
+      var chanceFallShapes = ['triangle','leaf'];
       var chanceWinterShapes = ['circle','cloud'];
       
     //run on window load
@@ -30,14 +33,19 @@ function init() {
         window.addEventListener('orientationchange', resizeCanvas, false);
         resizeCanvas();
     
+    //event listener for the spacebar
         window.addEventListener( "keydown", doKeyDown, true);
 		
-    
+    //onclick event for the mouse to change seasons
         canvas.onclick = function(event) {
+            //each click adds enough to change the page
             pageLife += 250;
             console.log(pageLife);
+            //array is cleared each time so new shapes can be generated
+            //with each season
             shapes = [];
-            
+            //if pageLife gets too high, it needs to be reset
+            //this lets user cycle through continuously
             if (pageLife > 1249) {
                 pageLife = 0;
             }
@@ -48,6 +56,7 @@ function init() {
 		timerTwo = setInterval(newShape, 200);  
       }
     
+    //for spacebar press. resets canvas and returns to title
     function doKeyDown(e) {
         if ( e.keyCode == 32 ) {
             console.log(pageLife);
@@ -99,7 +108,7 @@ function init() {
         //responsible for all colors but text
         var color = colorGenerator(seasonShapes);
 		//if statement limits the number of shapes on screen
-        if (shapes.length < 100){ 
+        if (shapes.length < 110){ 
         shapes.push(new Shape(x, y, color, z, seasonShapes));
         }
 	  }
@@ -132,7 +141,7 @@ function init() {
                 //spring storm clouds
                 r = 125 - 30*Math.random()|0,
                 g = 125 - 30*Math.random()|0,
-                b = 125 - 30*Math.random()|0
+                b = 125 - 30*Math.random()|0,
                 a = 1;
             }
         }
@@ -155,12 +164,19 @@ function init() {
         }
         //FALL
         else if (pageLife < 750) {
-            //"rgb(173, 82, 3)"
+            //"rgb(157, 221, 12)"
             if (seasonShapes == 'triangle'){
-                //falling leaves
-                r = 255 - 50*Math.random()|0,
+                //falling leaves green
+                r = 42 - 50*Math.random()|0,
                 g = 186 - 80*Math.random()|0,
-                b = 0 + 30*Math.random()|0
+                b = 0 + 30*Math.random()|0,
+                a = 1;
+            }
+            if (seasonShapes == 'leaf'){
+                //falling leaves orange
+                r = 255 - 50*Math.random()|0,
+                g = 100 + 40*Math.random()|0,
+                b = 3 + 20*Math.random()|0,
                 a = 1;
             }
         }
@@ -201,10 +217,10 @@ function init() {
         else if (pageLife < 500) {
             currentSeason = "Summer and its sunny rays";
             //return "rgb(255, 186, 0)";
-            return "#0f6520";
+            return "#63ff82";
         }
         else if (pageLife < 750) {
-            currentSeason = "Fall and its many leaves";
+            currentSeason = "Fall and its fluttering leaves";
             return "#00a069";
         }
         else if (pageLife < 1000) {
@@ -212,7 +228,7 @@ function init() {
             return "#dd0000";
         }
         else {
-            currentSeason = "Seasons in Canvas";
+            currentSeason = "Poetic Seasons in Canvas";
             return "white";
         }
     }
@@ -244,12 +260,28 @@ function init() {
     function drawTriangle(triangle) {
 		context.beginPath();
 		context.fillStyle = triangle.color;
-		context.moveTo(triangle.x+triangle.size+8+( Math.floor(Math.random()*9)),triangle.y);
-		context.lineTo(triangle.x,triangle.y);
+		context.moveTo(triangle.x + triangle.size + 8 + ( Math.floor(Math.random()*9)),triangle.y);
+		context.lineTo(triangle.x - triangle.size - ( Math.floor(Math.random()*9)),triangle.y);
 		context.lineTo(triangle.x,triangle.y+triangle.size+70+ ( Math.floor(Math.random()*9)));
 	    context.closePath();
         context.fill();
 	  }
+    
+    function drawLeaf(leaf) {
+		context.beginPath();
+		context.fillStyle = leaf.color;
+        //top
+        context.moveTo(leaf.x + leaf.size, leaf.y - leaf.size);
+        //right
+		context.lineTo(leaf.x + (leaf.size*2)+8+( Math.floor(Math.random()*9)),leaf.y);
+        //bottom
+		context.lineTo(leaf.x + (leaf.size),leaf.y + (leaf.size*2));
+        //left
+		context.lineTo(leaf.x-8-( Math.floor(Math.random()*9)),leaf.y);
+	    context.closePath();
+        context.fill();
+	  }
+    
 	  function drawCloud(cloud) {
 		 context.beginPath();
          
@@ -306,15 +338,25 @@ function init() {
 	}
     
     function drawSeasonText() {
+        //ifelse checks for title page
+        //if -for season name, else - for title page
+        if (pageLife < 1000) {
 		context.fillStyle = textColor();
 		context.font = 'bold 3em sans-serif';
 		context.textAlign = 'center';
 		context.fillText(currentSeason, canvas.width/2, canvas.height/1.2);
+        } else {
+          context.fillStyle = textColor();
+		  context.font = 'bold 5em sans-serif';
+		  context.textAlign = 'center';
+		  context.fillText(currentSeason, canvas.width/2, canvas.height/2); 
+        }
 	}
     
     function resizeCanvas() {
         //add to the page's life
         //pageLife++;
+        
         if (pageLife > 1249) {
             pageLife = 0;
             }
@@ -332,6 +374,8 @@ function init() {
 				drawCircle(shapes[i]);
 			} else if (shapes[i].shape == 'triangle') {
 				drawTriangle(shapes[i]);
+			} else if (shapes[i].shape == 'leaf') {
+				drawLeaf(shapes[i]);
 			} else if (shapes[i].shape == 'drop') {
 				drawDrop(shapes[i]);
 			} else if (shapes[i].shape == 'cloud') {
@@ -360,6 +404,9 @@ function init() {
             if (shapes[i].shape == 'triangle') {
                 shapes[i].y += shapes[i].dy;
             }
+            if (shapes[i].shape == 'leaf') {
+                shapes[i].y += shapes[i].dy;
+            }
             if (shapes[i].shape == 'text') {
                 shapes[i].x += shapes[i].dx;
             }
@@ -372,10 +419,8 @@ function init() {
       }
     
       
-    //changes background to a stormy blue to fit theme
+    //changes bg color to match the season and theme
     function fillBackgroundColor() {
-		 //var colors = ["white", "yellow", "blue", "red"];
-		 //var bgColor = colors[Math.floor(Math.random() * colors.length)];
         
         //pageLife determines that bg color to set a seasonal tone
         if (pageLife < 250) {
@@ -388,7 +433,7 @@ function init() {
         }
         else if (pageLife < 750) {
             //fall
-            context.fillStyle = "#68147c";
+            context.fillStyle = "#5b1586";
         }
         else if (pageLife < 1000) {
             //winter
@@ -396,7 +441,7 @@ function init() {
             context.fillStyle = "#111740";
         }
         else {
-            //START PAGE
+            //TITLE PAGE
             context.fillStyle = "#008c91";
         }
 		 context.fillRect(0, 0, canvas.width, canvas.height);
@@ -407,6 +452,7 @@ function init() {
 		return (degrees * Math.PI)/180;
 	}
 	
+    //loads when window does
     window.onload = init;
 </script>
     
